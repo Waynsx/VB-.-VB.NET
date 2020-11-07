@@ -1,0 +1,14 @@
+        Dim DT As DataTable = DataGridView1.DataSource
+
+        Dim dupKeys = From row In DT Group row By grp = New With {Key .Val1 = row("UserID")}
+           Into Group Where Group.Count > 1
+                      Select RowNumber = Group.FirstOrDefault.Item("UserID")
+
+        Dim DTA = dupKeys
+
+        Dim dupRows = From row In DT Join dupKey In dupKeys On row("UserID") Equals dupKey Select row
+
+        If dupRows.Any Then
+            Dim dest = dupRows.CopyToDataTable
+            DataGridView2.DataSource = dest
+        End If
